@@ -1,0 +1,39 @@
+Vagrant.configure("2") do |config|
+
+
+    #config.vm.provision "shell", path: "bootstrap.sh"
+
+
+    # Nagios Server
+    config.vm.define "nagiosvm" do |nagiosvm|
+      nagiosvm.vm.box = "centos/7"
+      nagiosvm.vm.hostname = "nagiosvm.example.com"
+      nagiosvm.vm.network "private_network", ip: "172.42.42.100"
+      nagiosvm.vm.provider "virtualbox" do |v|
+        #v.gui = true
+        v.name = "nagiosvm"
+        v.memory = 4096
+        v.cpus = 2
+      end
+    end
+
+
+    NodeCount = 1
+    
+    # Other nodes
+    (1..NodeCount).each do |i|
+      config.vm.define "node#{i}" do |node|
+        node.vm.box = "centos/7"
+        node.vm.hostname = "node#{i}.example.com"
+        node.vm.network "private_network", ip: "172.42.42.10#{i}"
+        node.vm.provider "virtualbox" do |v|
+          #v.gui = true
+          v.name = "node#{i}"
+          v.memory = 1024
+          v.cpus = 1
+        end
+      end
+    end
+
+
+end
